@@ -1,88 +1,75 @@
 package de.jablab.sebschlicht.android.kits.commands;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.IOException;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+@JsonTypeInfo(
+        use = Id.CLASS,
+        include = As.PROPERTY,
+        property = "class")
+//        use = Id.CUSTOM,
+//        include = As.EXISTING_PROPERTY,
+//        property = "type")
+//@JsonTypeIdResolver(CommandTypeIdResolver.class)
 public abstract class Command {
 
-    private static final JSONParser PARSER = new JSONParser();
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static final String SERVER_SEARCH_REQUEST_STRING = "WHEREISKITS";
-
-    public static byte[] SERVER_SEARCH_REQUEST;
-    static {
-        SERVER_SEARCH_REQUEST = getUtf8Bytes(SERVER_SEARCH_REQUEST_STRING);
-    }
-
-    public static final String SERVER_SEARCH_RESPONSE_STRING = "HEREISKITS";
-
-    public static byte[] SERVER_SEARCH_RESPONSE;
-    static {
-        SERVER_SEARCH_RESPONSE = getUtf8Bytes(SERVER_SEARCH_RESPONSE_STRING);
-    }
-
-    protected static final String FIELD_TYPE = "type";
-
-    protected CommandType type;
+    private CommandType type;
 
     public Command(
             CommandType type) {
         this.type = type;
     }
 
-    protected static byte[] getUtf8Bytes(String value) {
-        try {
-            return value.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
+    public CommandType getType() {
+        return type;
     }
 
-    public abstract String toJson();
-
-    @SuppressWarnings("unchecked")
-    protected JSONObject toJsonObject() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(FIELD_TYPE, type.getIdentifier());
-        return jsonObject;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+        if (!getClass().equals(o.getClass())) {
+            return false;
+        }
+        Command other = (Command) o;
+        return (type == null && other.getType() == null)
+                || type.equals(other.getType());
     }
 
-    protected static CommandType loadType(JSONObject jsonObject) {
-        return CommandType.parseString((String) jsonObject
-                .get(Command.FIELD_TYPE));
+    public static String serializeCommand(Command command) {
+        try {
+            return MAPPER.writeValueAsString(command);
+        } catch (JsonProcessingException e) {
+            // TODO log
+        }
+        return null;
     }
 
-    public static Command parseString(String json) {
-        JSONObject jsonObject;
+    public static Command parseString(String value) {
         try {
-            jsonObject = (JSONObject) PARSER.parse(json);
-        } catch (ParseException e) {
+            return MAPPER.readValue(value, Command.class);
+        } catch (JsonParseException e) {
+            // TODO log
             e.printStackTrace();
-            return null;
-        }
-
-        CommandType type = loadType(jsonObject);
-        if (type == null) {
-            return null;
-        }
-
-        try {
-            Method parser =
-                    type.getType().getMethod("parseJson", JSONObject.class);
-            return (Command) parser.invoke(null, jsonObject);
-        } catch (NoSuchMethodException e) {
+        } catch (JsonMappingException e) {
+            // TODO log
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            // this should never happen
+            // TODO log
         }
         return null;
     }

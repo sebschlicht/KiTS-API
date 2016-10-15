@@ -1,6 +1,6 @@
 package de.jablab.sebschlicht.android.kits.commands;
 
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayCommand extends Command {
 
@@ -10,46 +10,46 @@ public class PlayCommand extends Command {
 
     private String name;
 
-    private IntroType type;
+    private IntroType introType;
 
     public PlayCommand(
-            String name,
-            IntroType type) {
+            @JsonProperty("name") String name,
+            @JsonProperty("introType") IntroType introType) {
         super(CommandType.PLAY);
         this.name = name;
-        this.type = type;
+        this.introType = introType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public IntroType getType() {
-        return type;
+    public void setIntroType(IntroType introType) {
+        this.introType = introType;
     }
 
-    @SuppressWarnings("unchecked")
+    public IntroType getIntroType() {
+        return introType;
+    }
+
     @Override
-    public String toJson() {
-        JSONObject command = super.toJsonObject();
-        command.put(FIELD_NAME, name);
-        command.put(FIELD_INTRO_TYPE, type.getIdentifier());
-
-        return command.toJSONString();
-    }
-
-    protected static String loadName(JSONObject jsonObject) {
-        return (String) jsonObject.get(FIELD_NAME);
-    }
-
-    protected static IntroType loadIntroType(JSONObject jsonObject) {
-        return IntroType.parseString((String) jsonObject.get(FIELD_INTRO_TYPE));
-    }
-
-    public static Command parseJson(JSONObject jsonObject) {
-        String name = loadName(jsonObject);
-        IntroType introType = loadIntroType(jsonObject);
-
-        return new PlayCommand(name, introType);
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+        PlayCommand other = (PlayCommand) o;
+        if (((name == null) && (other.getName() != null))
+                || !name.equals(other.getName())) {
+            return false;
+        }
+        if (((introType == null) && (other.getIntroType() != null))
+                || !introType.equals(other.getIntroType())) {
+            return false;
+        }
+        return true;
     }
 }
