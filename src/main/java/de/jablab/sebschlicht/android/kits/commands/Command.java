@@ -20,6 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //@JsonTypeIdResolver(CommandTypeIdResolver.class)
 public abstract class Command {
 
+    public static final String SERVER_SEARCH_REQUEST_STRING = "WHEREISKITS";
+
+    public static final String SERVER_SEARCH_RESPONSE_STRING = "HEREISKITS";
+
     protected static final ObjectMapper MAPPER = new ObjectMapper();
 
     private CommandType type;
