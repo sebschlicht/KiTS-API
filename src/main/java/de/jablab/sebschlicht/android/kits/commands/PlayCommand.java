@@ -42,12 +42,15 @@ public class PlayCommand extends Command {
             return false;
         }
         PlayCommand other = (PlayCommand) o;
-        if (((name == null) && (other.getName() != null))
-                || !name.equals(other.getName())) {
+
+        if (name == null && other.name != null) {
+            return false;
+        } else if (name != null && !name.equals(other.name)) {
             return false;
         }
-        if (((introType == null) && (other.getIntroType() != null))
-                || !introType.equals(other.getIntroType())) {
+        if (introType == null && other.introType != null) {
+            return false;
+        } else if (introType != null && !introType.equals(other.introType)) {
             return false;
         }
         return true;

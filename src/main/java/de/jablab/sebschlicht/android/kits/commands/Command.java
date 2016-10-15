@@ -59,14 +59,15 @@ public abstract class Command {
     }
 
     public static Command parseString(String value) {
+        if (value == null) {
+            return null;
+        }
         try {
             return MAPPER.readValue(value, Command.class);
         } catch (JsonParseException e) {
             // TODO log
-            e.printStackTrace();
         } catch (JsonMappingException e) {
             // TODO log
-            e.printStackTrace();
         } catch (IOException e) {
             // this should never happen
             // TODO log
