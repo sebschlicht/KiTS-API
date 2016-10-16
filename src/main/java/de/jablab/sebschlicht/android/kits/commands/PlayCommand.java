@@ -2,16 +2,26 @@ package de.jablab.sebschlicht.android.kits.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Command to play one of the intros of a series.
+ * 
+ * @author sebschlicht
+ *
+ */
 public class PlayCommand extends Command {
-
-    protected static final String FIELD_NAME = "name";
-
-    protected static final String FIELD_INTRO_TYPE = "introType";
 
     private String name;
 
     private IntroType introType;
 
+    /**
+     * Creates a new play command.
+     *
+     * @param name
+     *            series name
+     * @param introType
+     *            type of the intro that should be played
+     */
     public PlayCommand(
             @JsonProperty("name") String name,
             @JsonProperty("introType") IntroType introType) {
@@ -24,6 +34,10 @@ public class PlayCommand extends Command {
         this.name = name;
     }
 
+    /**
+     *
+     * @return series name
+     */
     public String getName() {
         return name;
     }
@@ -32,6 +46,10 @@ public class PlayCommand extends Command {
         this.introType = introType;
     }
 
+    /**
+     *
+     * @return type of the intro that should be played
+     */
     public IntroType getIntroType() {
         return introType;
     }
