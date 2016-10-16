@@ -1,5 +1,6 @@
 package de.jablab.sebschlicht.android.kits.commands;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -34,11 +35,10 @@ public class CommandTest {
         assertTrue(cmdPlay1.equals(cmdPlay2));
     }
 
-    @Test(
-            expected = JsonProcessingException.class)
+    @Test
     public void testSerializeNull() throws JsonProcessingException {
-        assertNull(Command.serializeCommandQuietly(null));
-        Command.serializeCommand(null);
+        assertEquals("null", Command.serializeCommandQuietly(null));
+        assertEquals("null", Command.serializeCommand(null));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class CommandTest {
     }
 
     @Test(
-            expected = JsonParseException.class)
+            expected = JsonMappingException.class)
     public void testParseEmpty() throws IOException {
         assertNull(Command.parseStringQuietly(""));
         Command.parseString("");
