@@ -11,30 +11,30 @@ public class PlayCommandTest {
     public void testNameNull() {
         // TODO should we really allow name `null`?
         PlayCommand cmd = new PlayCommand(null, IntroType.FULL);
-        String json = Command.serializeCommand(cmd);
+        String json = Command.serializeCommandQuietly(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseString(json);
+        Command base = Command.parseStringQuietly(json);
         assertEquals(cmd, base);
     }
 
     @Test
     public void testIntroTypeFull() {
         PlayCommand cmd = new PlayCommand("testName", IntroType.FULL);
-        String json = Command.serializeCommand(cmd);
+        String json = Command.serializeCommandQuietly(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseString(json);
+        Command base = Command.parseStringQuietly(json);
         assertEquals(cmd, base);
     }
 
     @Test
     public void testIntroTypeShort() {
         PlayCommand cmd = new PlayCommand("testName", IntroType.SHORT);
-        String json = Command.serializeCommand(cmd);
+        String json = Command.serializeCommandQuietly(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseString(json);
+        Command base = Command.parseStringQuietly(json);
         assertEquals(cmd, base);
     }
 
@@ -42,10 +42,10 @@ public class PlayCommandTest {
     public void testIntroTypeNull() {
         // TODO should we really allow intro type `null`?
         PlayCommand cmd = new PlayCommand("testName", null);
-        String json = Command.serializeCommand(cmd);
+        String json = Command.serializeCommandQuietly(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseString(json);
+        Command base = Command.parseStringQuietly(json);
         assertEquals(cmd, base);
     }
 }

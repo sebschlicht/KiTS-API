@@ -10,6 +10,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// FIXME add documentation
+// FIXME use the new API in KiTS application
+// TODO use existing property type to identify subclasses
+
+/**
+ * Base command specifying basic properties and providing methods to transform
+ * any derived Command from and into JSON.
+ *
+ * @author sebschlicht
+ *
+ */
 @JsonTypeInfo(
         use = Id.CLASS,
         include = As.PROPERTY,
@@ -20,19 +31,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //@JsonTypeIdResolver(CommandTypeIdResolver.class)
 public abstract class Command {
 
+    /**
+     * data client sends to initialize first contact with server
+     */
     public static final String SERVER_SEARCH_REQUEST_STRING = "WHEREISKITS";
 
+    /**
+     * data server responds with to make the client aware of it
+     */
     public static final String SERVER_SEARCH_RESPONSE_STRING = "HEREISKITS";
 
+    /**
+     * object mapper for JSON (de-)serialization
+     */
     protected static final ObjectMapper MAPPER = new ObjectMapper();
 
     private CommandType type;
 
-    public Command(
+    /**
+     * Initializes the base command with a type.
+     *
+     * @param type
+     *            command type specifying the intended action
+     */
+    protected Command(
             CommandType type) {
         this.type = type;
     }
 
+    /**
+     *
+     * @return command type specifying the intended action
+     */
     public CommandType getType() {
         return type;
     }
@@ -45,7 +75,7 @@ public abstract class Command {
         if (o == this) {
             return true;
         }
-        if (!getClass().equals(o.getClass())) {
+        if (!(o instanceof Command)) {
             return false;
         }
         Command other = (Command) o;
@@ -53,28 +83,79 @@ public abstract class Command {
                 || type.equals(other.getType());
     }
 
-    public static String serializeCommand(Command command) {
+    /**
+     * Serializes a command into a JSON string.
+     *
+     * @param command
+     *            command to be serialized
+     * @return JSON string representing the command passed
+     * @throws JsonProcessingException
+     *             if the serialization fails
+     */
+    public static String serializeCommand(Command command)
+            throws JsonProcessingException {
+        return MAPPER.writeValueAsString(command);
+    }
+
+    /**
+     * Serializes a command into a JSON string suppressing any errors.
+     *
+     * @param command
+     *            command to be serialized
+     * @return JSON string representing the command passed<br>
+     *         or <code>null</code> if the serialization fails (use
+     *         {@link #serializeCommand(Command)} if you need information about
+     *         the cause)
+     */
+    public static String serializeCommandQuietly(Command command) {
         try {
-            return MAPPER.writeValueAsString(command);
+            return serializeCommand(command);
         } catch (JsonProcessingException e) {
-            // TODO log
+            // ignore
         }
         return null;
     }
 
-    public static Command parseString(String value) {
+    /**
+     * Deserializes a command from a JSON string.
+     *
+     * @param value
+     *            JSON string representing a command
+     * @return command instance that is equivalent to the JSON string passed<br>
+     *         or <code>null</code> if the JSON is <code>null</code>
+     * @throws IOException
+     *             if the deserialization fails due to low-level IO problems
+     * @throws JsonMappingException
+     *             if the deserialization fails due to illegal JSON
+     * @throws JsonParseException
+     *             if the deserialization fails due to malformed JSON
+     */
+    public static Command parseString(String value)
+            throws JsonParseException, JsonMappingException, IOException {
         if (value == null) {
             return null;
         }
+        return MAPPER.readValue(value, Command.class);
+    }
+
+    /**
+     * Deserializes a command from a JSON string suppressing any errors.
+     *
+     * @param value
+     *            JSON string representing a command
+     * @return command instance that is equivalent to the JSON string passed<br>
+     *         or <code>null</code> if the JSON is <code>null</code> or the
+     *         deserialization fails
+     */
+    public static Command parseStringQuietly(String value) {
         try {
-            return MAPPER.readValue(value, Command.class);
+            return parseString(value);
         } catch (JsonParseException e) {
-            // TODO log
+            // ignore
         } catch (JsonMappingException e) {
-            // TODO log
+            // ignore
         } catch (IOException e) {
-            // this should never happen
-            // TODO log
+            // ignore
         }
         return null;
     }

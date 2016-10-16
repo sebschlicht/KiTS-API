@@ -10,10 +10,10 @@ public class RegisterCommandTest {
     @Test
     public void testValid() {
         RegisterCommand cmd = new RegisterCommand();
-        String json = Command.serializeCommand(cmd);
+        String json = Command.serializeCommandQuietly(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseString(json);
+        Command base = Command.parseStringQuietly(json);
         assertEquals(cmd, base);
     }
 }
