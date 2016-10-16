@@ -38,8 +38,9 @@ public class CommandTypeIdResolver implements TypeIdResolver {
         if (value == null) {
             return null;
         }
-        if (value instanceof CommandType) {
-            return value.toString();
+        if (value instanceof Command) {
+            CommandType type = ((Command) value).getType();
+            return (type == null) ? null : type.toString();
         }
         throw new IllegalStateException("Unsupported value of type \""
                 + value.getClass().getName() + "\"!");
@@ -53,6 +54,10 @@ public class CommandTypeIdResolver implements TypeIdResolver {
     @Override
     public JavaType typeFromId(DatabindContext context, String id)
             throws IOException {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+
         CommandType type = CommandType.parseString(id);
         if (type == null) {
             throw new IllegalStateException(

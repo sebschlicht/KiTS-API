@@ -9,10 +9,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-// FIXME add documentation
-// FIXME use the new API in KiTS application
-// TODO use existing property type to identify subclasses
+import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 
 /**
  * Base command specifying basic properties and providing methods to transform
@@ -22,13 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @JsonTypeInfo(
-        use = Id.CLASS,
-        include = As.PROPERTY,
-        property = "class")
-//        use = Id.CUSTOM,
-//        include = As.EXISTING_PROPERTY,
-//        property = "type")
-//@JsonTypeIdResolver(CommandTypeIdResolver.class)
+        use = Id.CUSTOM,
+        include = As.EXISTING_PROPERTY,
+        property = "type")
+@JsonTypeIdResolver(CommandTypeIdResolver.class)
 public abstract class Command {
 
     /**
