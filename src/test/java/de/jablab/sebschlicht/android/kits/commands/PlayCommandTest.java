@@ -10,9 +10,9 @@ import org.junit.Test;
 public class PlayCommandTest {
 
     @Test
-    public void testManualEnumSerialization() throws IOException {
-        String json =
-                "{\"type\":\"plAy\",\"introType\":\"shoRt\",\"name\":\"Scooby Doo\"}";
+    public void testMixedCaseIntroType() throws IOException {
+        String json = "{\"type\":\"" + CommandType.PLAY.getIdentifier()
+                + "\",\"introType\":\"shoRt\",\"name\":\"Scooby Doo\"}";
         Command base = Command.parseString(json);
         assertNotNull(base);
     }

@@ -2,8 +2,10 @@ package de.jablab.sebschlicht.android.kits.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -12,6 +14,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 
 public class CommandTest {
 
@@ -57,16 +60,41 @@ public class CommandTest {
     @Test(
             expected = JsonParseException.class)
     public void testParseMalformedJson() throws IOException {
-        String malformedJson = "{\"type\":\"PLAY\"";
+        String malformedJson =
+                "{\"type\":\"" + CommandType.STOP.getIdentifier() + "\"";
         assertNull(Command.parseStringQuietly(malformedJson));
         Command.parseString(malformedJson);
     }
 
     @Test(
             expected = JsonMappingException.class)
-    public void testParseIllegalJson() throws IOException {
-        String illegalJson = "{\"typ\":\"PLAY\"}";
-        assertNull(Command.parseStringQuietly(illegalJson));
-        Command.parseString(illegalJson);
+    public void testParseInvalidJson() throws IOException {
+        String invalidJson =
+                "{\"typ\":\"" + CommandType.STOP.getIdentifier() + "\"}";
+        assertNull(Command.parseStringQuietly(invalidJson));
+        Command.parseString(invalidJson);
+    }
+
+    @Test
+    public void testMixedCaseType() throws IOException {
+        String json = "{\"type\":\"sTop\"}";
+        Command base = Command.parseString(json);
+        assertNotNull(base);
+    }
+
+    @Test(
+            expected = InvalidTypeIdException.class)
+    public void testInvalidType() throws IOException {
+        String invalidType = "blubb";
+        for (CommandType type : CommandType.values()) {
+            if (type.getIdentifier().equals(invalidType)) {
+                fail("Type \"" + invalidType
+                        + "\" is supposed to be invalid but is valid!");
+            }
+        }
+
+        String invalidTypeJson = "{\"type\":\"" + invalidType + "\"}";
+        assertNull(Command.parseStringQuietly(invalidTypeJson));
+        Command.parseString(invalidTypeJson);
     }
 }
