@@ -3,49 +3,29 @@ package de.jablab.sebschlicht.android.kits.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 public class SetVolumeCommandTest {
 
     @Test
-    public void testValidVolume() {
+    public void testVolumeValid() throws IOException {
         SetVolumeCommand cmd = new SetVolumeCommand(100);
-        String json = Command.serializeCommandQuietly(cmd);
+        String json = Command.serializeCommand(cmd);
         assertNotNull(json);
 
-        Command base = Command.parseStringQuietly(json);
+        Command base = Command.parseString(json);
         assertEquals(cmd, base);
     }
 
-    @Test
-    public void testVolumeZero() {
-        SetVolumeCommand cmd = new SetVolumeCommand(0);
-        String json = Command.serializeCommandQuietly(cmd);
-        assertNotNull(json);
-
-        Command base = Command.parseStringQuietly(json);
-        assertEquals(cmd, base);
+    //@Test
+    public void testVolumeMissing() throws IOException {
+        // TODO test what happens if JSON is missing the volume
     }
 
-    @Test
-    public void testVolumeNegative() {
-        // TODO should we really allow negative volume?
-        SetVolumeCommand cmd = new SetVolumeCommand(-2);
-        String json = Command.serializeCommandQuietly(cmd);
-        assertNotNull(json);
-
-        Command base = Command.parseStringQuietly(json);
-        assertEquals(cmd, base);
-    }
-
-    @Test
-    public void testVolumeTooHigh() {
-        // TODO should we really allow too high volume?
-        SetVolumeCommand cmd = new SetVolumeCommand(1000);
-        String json = Command.serializeCommandQuietly(cmd);
-        assertNotNull(json);
-
-        Command base = Command.parseStringQuietly(json);
-        assertEquals(cmd, base);
+    //@Test
+    public void testVolumeInvalid() throws IOException {
+        // TODO test what happens if constructor refuses volume
     }
 }

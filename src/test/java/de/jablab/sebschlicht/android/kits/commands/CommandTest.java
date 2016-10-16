@@ -57,7 +57,7 @@ public class CommandTest {
     @Test(
             expected = JsonParseException.class)
     public void testParseMalformedJson() throws IOException {
-        String malformedJson = "{\"type\":\"\"";
+        String malformedJson = "{\"type\":\"PLAY\"";
         assertNull(Command.parseStringQuietly(malformedJson));
         Command.parseString(malformedJson);
     }
@@ -65,7 +65,7 @@ public class CommandTest {
     @Test(
             expected = JsonMappingException.class)
     public void testParseIllegalJson() throws IOException {
-        String illegalJson = "{\"tpe\":\"PLAY\"}";
+        String illegalJson = "{\"typ\":\"PLAY\"}";
         assertNull(Command.parseStringQuietly(illegalJson));
         Command.parseString(illegalJson);
     }
