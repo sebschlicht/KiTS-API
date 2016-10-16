@@ -71,7 +71,7 @@ public enum CommandType {
     /**
      * TODO remove: for compatibility reasons only<br>
      * <br>
-     * Loads a command type from a string.
+     * Loads a command type from string.
      *
      * @param commandType
      *            unique identifier of a command type

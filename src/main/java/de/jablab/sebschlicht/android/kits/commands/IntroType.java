@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Type of the intro that the {@link PlayCommand play command} intends to play.
- * 
+ *
  * @author sebschlicht
  *
  */
@@ -47,6 +47,7 @@ public enum IntroType {
     /**
      * TODO remove: for compatibility reasons only<br>
      * <br>
+     * Loads an intro type from string.
      *
      * @param type
      *            unique identifier of an intro type
