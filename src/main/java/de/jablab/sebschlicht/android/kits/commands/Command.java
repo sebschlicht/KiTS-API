@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 public abstract class Command {
 
     /**
+     * TODO is this field being used at all?<br>
      * data client sends to initialize first contact with server
      */
     public static final String SERVER_SEARCH_REQUEST_STRING = "WHEREISKITS";
@@ -92,14 +93,14 @@ public abstract class Command {
     }
 
     /**
-     * Serializes a command into a JSON string suppressing any errors.
+     * Serializes a command into a JSON string suppressing any errors.<br>
+     * Use {@link #serializeCommand(Command)} instead, if you need information
+     * about serialization failures.
      *
      * @param command
      *            command to be serialized
      * @return JSON string representing the command passed<br>
-     *         or <code>null</code> if the serialization fails (use
-     *         {@link #serializeCommand(Command)} if you need information about
-     *         the cause)
+     *         or <code>null</code> if the serialization failed
      */
     public static String serializeCommandQuietly(Command command) {
         try {
@@ -133,7 +134,9 @@ public abstract class Command {
     }
 
     /**
-     * Deserializes a command from a JSON string suppressing any errors.
+     * Deserializes a command from a JSON string suppressing any errors.<br>
+     * Use {@link #parseString(String)} instead, if you need information
+     * about deserialization failures.
      *
      * @param value
      *            JSON string representing a command
