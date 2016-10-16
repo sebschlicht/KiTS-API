@@ -8,14 +8,27 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
+/**
+ * Resolves the subclass for a {@link Command command} by its {@link CommandType
+ * type} and vice
+ * versa when (de-)serialized from/into JSON.
+ *
+ * @author sebschlicht
+ *
+ */
 public class CommandTypeIdResolver implements TypeIdResolver {
 
     private JavaType baseType;
 
     @Override
     public String getDescForKnownTypeIds() {
-        // TODO Auto-generated method stub
-        return null;
+        String[] knownTypeIds = new String[CommandType.values().length];
+        int i = 0;
+        for (CommandType type : CommandType.values()) {
+            knownTypeIds[i] = type.getIdentifier();
+            i += 1;
+        }
+        return "[" + String.join(", ", knownTypeIds) + "]";
     }
 
     @Override
@@ -54,14 +67,9 @@ public class CommandTypeIdResolver implements TypeIdResolver {
     @Override
     public JavaType typeFromId(DatabindContext context, String id)
             throws IOException {
-        if (id == null || id.isEmpty()) {
-            return null;
-        }
-
         CommandType type = CommandType.parseString(id);
         if (type == null) {
-            throw new IllegalStateException(
-                    "Illegal command type identifier \"" + id + "\"!");
+            return null;
         }
         return TypeFactory.defaultInstance().constructSpecializedType(baseType,
                 type.getType());
