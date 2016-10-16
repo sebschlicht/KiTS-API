@@ -3,8 +3,8 @@ package de.jablab.sebschlicht.android.kits.commands;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Command to play one of the intros of a series.
- * 
+ * Command to play one of the intros of a series at the server.
+ *
  * @author sebschlicht
  *
  */
@@ -15,7 +15,7 @@ public class PlayCommand extends Command {
     private IntroType introType;
 
     /**
-     * Creates a new play command.
+     * Creates a new play intro command.
      *
      * @param name
      *            series name
